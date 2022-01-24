@@ -1,0 +1,32 @@
+apiVersion: skaffold/v2beta18
+kind: Config
+build:
+  artifacts:
+    - image: k8s-managed-sql
+      context: .
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        infer:
+          - "fs/src/**"
+    - image: k8s-managed-sql-sqlserver
+      context: .
+      docker:
+        dockerfile: sqlserver.Dockerfile
+  tagPolicy:
+    gitCommit:
+      ignoreChanges: true
+  local:
+    push: false
+    useBuildkit: true
+    useDockerCLI: true
+deploy:
+  helm:
+    releases:
+      - name: k8s-managed-sql
+        namespace: k8s-managed-sql
+        createNamespace: true
+        chartPath: chart
+        artifactOverrides:
+          operator.image: k8s-managed-sql
+          sqlServer.image: k8s-managed-sql-sqlserver

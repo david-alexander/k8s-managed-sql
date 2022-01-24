@@ -1,0 +1,7 @@
+apiVersion: managedsql.api.k8s.dma.net.nz/v1
+kind: SQLDB
+metadata:
+  name: 
+  namespace: default
+spec:
+  instance: nonproduction

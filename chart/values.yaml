@@ -1,0 +1,12 @@
+operator:
+  image: null
+sqlServer:
+  image: null
+  instances:
+    - name: nonproduction
+      memory: 2Gi
+      password: Passw0rd!
+      timezone: UTC
+      ports:
+        first: 1435
+        last: 1450

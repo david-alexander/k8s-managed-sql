@@ -1,0 +1,39 @@
+{{ range $i, $instance := $.Values.sqlServer.instances }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operator-{{ $instance.name }}
+  labels:
+    app: k8s-managed-sql
+    role: operator
+    instance: {{ $instance.name }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: k8s-managed-sql
+      role: operator
+      instance: {{ $instance.name }}
+  template:
+    metadata:
+      labels:
+        app: k8s-managed-sql
+        role: operator
+        instance: {{ $instance.name }}
+    spec:
+      volumes:
+      containers:
+      - image: {{ $.Values.operator.image }}
+        name: operator
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: INSTANCE_NAME
+          value: {{ $instance.name | quote }}
+        - name: SA_PASSWORD
+          value: {{ $instance.password | quote }}
+        - name: FIRST_PORT
+          value: {{ $instance.ports.first | quote }}
+        - name: LAST_PORT
+          value: {{ $instance.ports.last | quote }}
+{{ end }}
