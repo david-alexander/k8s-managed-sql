@@ -8,7 +8,7 @@ kc.loadFromDefault();
 const coreAPI = kc.makeApiClient(k8s.CoreV1Api);
 const customObjectsAPI = kc.makeApiClient(k8s.CustomObjectsApi);
 
-async function reconcile(instanceName: string, firstPort: number, lastPort: number)
+async function reconcile(instanceName: string, namespace: string, firstPort: number, lastPort: number)
 {
     let objs: { [key: string]: any } = {};
 
@@ -93,7 +93,7 @@ async function reconcile(instanceName: string, firstPort: number, lastPort: numb
                 },
                 spec: {
                     type: 'ExternalName',
-                    externalName: `sqlserver-${instanceName}-${port}.k8s-managed-sql.svc.cluster.local`,
+                    externalName: `sqlserver-${instanceName}-${port}.${namespace}.svc.cluster.local`,
                     ports: [
                         {
                             port: 1433
@@ -110,6 +110,7 @@ async function reconcile(instanceName: string, firstPort: number, lastPort: numb
 async function main()
 {
     let instanceName = process.env.INSTANCE_NAME as string;
+    let namespace = process.env.NAMESPACE as string;
     let password = process.env.SA_PASSWORD as string;
     let firstPort = parseInt(process.env.FIRST_PORT as string);
     let lastPort = parseInt(process.env.LAST_PORT as string);
@@ -143,7 +144,7 @@ async function main()
     {
         try
         {
-            await reconcile(instanceName, firstPort, lastPort);
+            await reconcile(instanceName, namespace, firstPort, lastPort);
         }
         catch (e)
         {

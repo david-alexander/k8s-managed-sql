@@ -30,6 +30,8 @@ spec:
         env:
         - name: INSTANCE_NAME
           value: {{ $instance.name | quote }}
+        - name: NAMESPACE
+          value: {{ $.Release.Namespace }}
         - name: SA_PASSWORD
           value: {{ $instance.password | quote }}
         - name: FIRST_PORT
