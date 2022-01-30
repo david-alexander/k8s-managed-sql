@@ -114,6 +114,7 @@ async function main()
     let password = process.env.SA_PASSWORD as string;
     let firstPort = parseInt(process.env.FIRST_PORT as string);
     let lastPort = parseInt(process.env.LAST_PORT as string);
+    let reconcileIntervalSeconds = parseInt(process.env.RECONCILE_INTERVAL_SECONDS as string);
 
     while (true)
     {
@@ -150,7 +151,7 @@ async function main()
         {
             console.error(e);
         }
-        await new Promise((resolve, reject) => setTimeout(resolve, 1000));
+        await new Promise((resolve, reject) => setTimeout(resolve, reconcileIntervalSeconds * 1000));
     }
 }
 

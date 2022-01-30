@@ -31,11 +31,13 @@ spec:
         - name: INSTANCE_NAME
           value: {{ $instance.name | quote }}
         - name: NAMESPACE
-          value: {{ $.Release.Namespace }}
+          value: {{ $.Release.Namespace | quote }}
         - name: SA_PASSWORD
           value: {{ $instance.password | quote }}
         - name: FIRST_PORT
           value: {{ $instance.ports.first | quote }}
         - name: LAST_PORT
           value: {{ $instance.ports.last | quote }}
+        - name: RECONCILE_INTERVAL_SECONDS
+          value: {{ $.Values.operator.reconcileIntervalSeconds | quote }}
 {{ end }}

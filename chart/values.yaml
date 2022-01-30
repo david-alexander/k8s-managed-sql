@@ -1,5 +1,6 @@
 operator:
   image: null
+  reconcileIntervalSeconds: 60
 sqlServer:
   image: null
   instances:
