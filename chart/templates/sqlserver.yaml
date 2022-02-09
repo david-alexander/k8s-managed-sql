@@ -64,10 +64,23 @@ spec:
             memory: "{{ $instance.memory }}"
       volumes:
       - name: data
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: {{ $instance.name }}-data
       - name: config
         configMap:
           name: sqlserver-{{ $instance.name }}-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $instance.name }}-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ $instance.storage.size }}
+  storageClassName: {{ $instance.storage.class }}
 ---
 kind: ConfigMap
 apiVersion: v1
