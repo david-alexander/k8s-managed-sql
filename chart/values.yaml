@@ -18,3 +18,5 @@ sqlServer:
         azureBlobStorage:
           externalSecret:
             path: secret/sqlbackups
+      scheduling:
+        environment: nonproduction

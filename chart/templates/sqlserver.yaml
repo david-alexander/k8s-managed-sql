@@ -39,6 +39,15 @@ spec:
         role: sqlserver
         instance: {{ $instance.name }}
     spec:
+      tolerations:
+      - key: "workload"
+        operator: "Equal"
+        value: "mssql"
+        effect: "NoSchedule"
+      - key: "environment"
+        operator: "Equal"
+        value: {{ $instance.scheduling.environment | quote }}
+        effect: "NoSchedule"
       containers:
       - image: {{ $.Values.sqlServer.image }}
         env:
