@@ -45,11 +45,14 @@ async function reconcile(instanceName: string, namespace: string, firstPort: num
 
     for (let service of (await coreAPI.listServiceForAllNamespaces()).body.items)
     {
-        let obj = find(service);
-
-        if (obj)
+        if ((service.metadata?.labels || {})['managedsql.api.k8s.dma.net.nz/instance'] == instanceName)
         {
-            obj.service = service;
+            let obj = find(service);
+
+            if (obj)
+            {
+                obj.service = service;
+            }
         }
     }
 
@@ -89,7 +92,10 @@ async function reconcile(instanceName: string, namespace: string, firstPort: num
                             name: obj.metadata.name,
                             uid: obj.db.metadata.uid
                         }
-                    ]
+                    ],
+                    labels: {
+                        'managedsql.api.k8s.dma.net.nz/instance': obj.db.spec.instance
+                    }
                 },
                 spec: {
                     type: 'ExternalName',
