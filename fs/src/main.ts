@@ -115,6 +115,8 @@ async function main()
     let firstPort = parseInt(process.env.FIRST_PORT as string);
     let lastPort = parseInt(process.env.LAST_PORT as string);
     let reconcileIntervalSeconds = parseInt(process.env.RECONCILE_INTERVAL_SECONDS as string);
+    let backupsAzureBlobContainerUrl = process.env.BACKUPS_AZURE_BLOB_CONTAINER_URL as string;
+    let backupsAzureBlobContainerSas = process.env.BACKUPS_AZURE_BLOB_CONTAINER_SAS as string;
 
     while (true)
     {
@@ -129,7 +131,11 @@ async function main()
         }
     }
 
-    for (let batch of (await fs.promises.readFile('./procedures.sql', 'utf8')).split('\nGO'))
+    const procedures = (await fs.promises.readFile('./procedures.sql', 'utf8'))
+                        .replace(/__BACKUPS_AZURE_BLOB_CONTAINER_URL__/g, backupsAzureBlobContainerUrl)
+                        .replace(/__BACKUPS_AZURE_BLOB_CONTAINER_SAS__/g, backupsAzureBlobContainerSas);
+
+    for (let batch of procedures.split('\nGO'))
     {
         await sqlServerInstance.runSQL(batch);
     }

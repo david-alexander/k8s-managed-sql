@@ -40,4 +40,29 @@ spec:
           value: {{ $instance.ports.last | quote }}
         - name: RECONCILE_INTERVAL_SECONDS
           value: {{ $.Values.operator.reconcileIntervalSeconds | quote }}
+        - name: BACKUPS_AZURE_BLOB_CONTAINER_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ $instance.name }}-backups-azure-blob-storage-external-secret
+              key: AZURE_BLOB_CONTAINER_URL
+        - name: BACKUPS_AZURE_BLOB_CONTAINER_SAS
+          valueFrom:
+            secretKeyRef:
+              name: {{ $instance.name }}-backups-azure-blob-storage-external-secret
+              key: AZURE_BLOB_CONTAINER_SAS
+---
+apiVersion: kubernetes-client.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ $instance.name }}-backups-azure-blob-storage-external-secret
+spec:
+  backendType: vault
+  data:
+    - key: {{ $instance.backups.azureBlobStorage.externalSecret.path }}
+      property: AZURE_BLOB_CONTAINER_URL
+      name: AZURE_BLOB_CONTAINER_URL
+    - key: {{ $instance.backups.azureBlobStorage.externalSecret.path }}
+      property: AZURE_BLOB_CONTAINER_SAS
+      name: AZURE_BLOB_CONTAINER_SAS
+  kvVersion: 1
 {{ end }}

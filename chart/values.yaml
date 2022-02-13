@@ -14,3 +14,7 @@ sqlServer:
       storage:
         size: 500Gi
         class: default
+      backups:
+        azureBlobStorage:
+          externalSecret:
+            path: secret/sqlbackups
