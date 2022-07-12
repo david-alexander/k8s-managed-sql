@@ -32,8 +32,6 @@ spec:
           value: {{ $instance.name | quote }}
         - name: NAMESPACE
           value: {{ $.Release.Namespace | quote }}
-        - name: SA_PASSWORD
-          value: {{ $instance.password | quote }}
         - name: FIRST_PORT
           value: {{ $instance.ports.first | quote }}
         - name: LAST_PORT
@@ -50,6 +48,11 @@ spec:
             secretKeyRef:
               name: {{ $instance.name }}-backups-azure-blob-storage-external-secret
               key: AZURE_BLOB_CONTAINER_SAS
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $instance.name }}-passwords
+              key: SA_PASSWORD
 ---
 apiVersion: kubernetes-client.io/v1
 kind: ExternalSecret
@@ -64,5 +67,17 @@ spec:
     - key: {{ $instance.backups.azureBlobStorage.externalSecret.path }}
       property: AZURE_BLOB_CONTAINER_SAS
       name: AZURE_BLOB_CONTAINER_SAS
+  kvVersion: 1
+---
+apiVersion: kubernetes-client.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ $instance.name }}-passwords
+spec:
+  backendType: vault
+  data:
+    - key: {{ $instance.passwords.externalSecret.path }}
+      property: SA_PASSWORD
+      name: SA_PASSWORD
   kvVersion: 1
 {{ end }}

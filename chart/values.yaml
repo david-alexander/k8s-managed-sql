@@ -6,7 +6,6 @@ sqlServer:
   instances:
     - name: nonproduction
       memory: 2Gi
-      password: Passw0rd!
       timezone: UTC
       ports:
         first: 1435
@@ -14,6 +13,9 @@ sqlServer:
       storage:
         size: 500Gi
         class: default
+      passwords:
+        externalSecret:
+          path: secret/sqlserver
       backups:
         azureBlobStorage:
           externalSecret:

@@ -9,6 +9,7 @@ GO
 
 CREATE PROCEDURE [dbo].[CreateDB]
 	@DbName SYSNAME,
+	@Password NVARCHAR(MAX),
 	@FirstPort INT,
 	@LastPort INT
 AS
@@ -17,10 +18,11 @@ BEGIN
 	
 	DECLARE @DbNameQuoted SYSNAME = QUOTENAME(@DbName);
 	DECLARE @DbNameQuotedString SYSNAME = QUOTENAME(@DbName, '''');
+	DECLARE @PasswordQuotedString SYSNAME = QUOTENAME(@Password, '''');
 
 	IF NOT EXISTS (SELECT name FROM master.sys.server_principals WHERE name = @DbName)
 	BEGIN
-		EXEC ('CREATE LOGIN ' + @DbNameQuoted + ' WITH PASSWORD = ''password'', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF')
+		EXEC ('CREATE LOGIN ' + @DbNameQuoted + ' WITH PASSWORD = ' + @PasswordQuotedString + ', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF')
 	END
 
 	IF NOT EXISTS (SELECT * FROM master.sys.databases WHERE name = @DbName)
