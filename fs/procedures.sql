@@ -24,6 +24,10 @@ BEGIN
 	BEGIN
 		EXEC ('CREATE LOGIN ' + @DbNameQuoted + ' WITH PASSWORD = ' + @PasswordQuotedString + ', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF')
 	END
+	ELSE
+	BEGIN
+		EXEC ('ALTER LOGIN ' + @DbNameQuoted + ' WITH PASSWORD = ' + @PasswordQuotedString + '')
+	END
 
 	IF NOT EXISTS (SELECT * FROM master.sys.databases WHERE name = @DbName)
 	BEGIN
