@@ -54,7 +54,10 @@ spec:
         - name: ACCEPT_EULA
           value: 'Y'
         - name: SA_PASSWORD
-          value: {{ $instance.password }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $instance.name }}-passwords
+              key: SA_PASSWORD
         - name: TZ
           value: {{ $instance.timezone }}
         name: sqlserver
