@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Namespace }}-full-access
 rules:
 - apiGroups: [""]
-  resources: ["services"]
+  resources: ["services", "secrets"]
   verbs: ["*"]
 - apiGroups: ["managedsql.api.k8s.dma.net.nz"]
   resources: ["sqldbs"]

@@ -139,6 +139,12 @@ GO
 GRANT EXEC ON [FullBackup] TO PUBLIC
 GO
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'RestoreSnapshot')
+BEGIN
+	DROP PROCEDURE [dbo].[RestoreSnapshot]
+END
+GO
+
 CREATE PROCEDURE [RestoreSnapshot]
 	@SnapshotID NVARCHAR(MAX)
 WITH EXECUTE AS OWNER
@@ -152,6 +158,12 @@ GO
 GRANT EXEC ON [RestoreSnapshot] TO PUBLIC
 GO
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'CreateSnapshot')
+BEGIN
+	DROP PROCEDURE [dbo].[CreateSnapshot]
+END
+GO
+
 CREATE PROCEDURE [CreateSnapshot]
 	@SnapshotID NVARCHAR(MAX)
 WITH EXECUTE AS OWNER
@@ -163,6 +175,12 @@ END
 GO
 
 GRANT EXEC ON [CreateSnapshot] TO PUBLIC
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'DeleteSnapshot')
+BEGIN
+	DROP PROCEDURE [dbo].[DeleteSnapshot]
+END
 GO
 
 CREATE PROCEDURE [DeleteSnapshot]
