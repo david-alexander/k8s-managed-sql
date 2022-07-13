@@ -111,9 +111,8 @@ async function reconcile(instanceName: string, namespace: string, firstPort: num
                 }
             });
         }
-
-        // TODO: This probably isn't the best way to do an upsert...
-        await coreAPI.replaceNamespacedSecret(obj.metadata.name, obj.metadata.namespace, {
+        
+        const secret: k8s.V1Secret = {
             metadata: {
                 name: obj.metadata.name,
                 ownerReferences: [
@@ -131,7 +130,17 @@ async function reconcile(instanceName: string, namespace: string, firstPort: num
             stringData: {
                 password: userPassword
             }
-        });
+        };
+
+        // TODO: This probably isn't the best way to do an upsert...
+        try
+        {
+            await coreAPI.createNamespacedSecret(obj.metadata.namespace, secret);
+        }
+        catch (e)
+        {
+            await coreAPI.replaceNamespacedSecret(obj.metadata.name, obj.metadata.namespace, secret);
+        }
 
         port++;
     }
