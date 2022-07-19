@@ -100,25 +100,5 @@ metadata:
 data:
   mssql.conf: |
     [network]
-    tcpport=1433{{ range $i, $port := untilStep (int $instance.ports.first) (int (add1 $instance.ports.last)) 1 }},{{$port}}{{end}}
-{{ range $i, $port := untilStep (int $instance.ports.first) (int (add1 $instance.ports.last)) 1 }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: k8s-managed-sql
-    role: sqlserver
-    instance: {{ $instance.name }}
-  name: sqlserver-{{ $instance.name }}-{{ $port }}
-spec:
-  ports:
-  - port: 1433
-    targetPort: {{ $port }}
-    protocol: TCP
-  selector:
-    app: k8s-managed-sql
-    role: sqlserver
-    instance: {{ $instance.name }}
-{{ end }}
+    tcpport=1433
 {{ end }}

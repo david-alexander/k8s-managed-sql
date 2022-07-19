@@ -32,10 +32,6 @@ spec:
           value: {{ $instance.name | quote }}
         - name: NAMESPACE
           value: {{ $.Release.Namespace | quote }}
-        - name: FIRST_PORT
-          value: {{ $instance.ports.first | quote }}
-        - name: LAST_PORT
-          value: {{ $instance.ports.last | quote }}
         - name: RECONCILE_INTERVAL_SECONDS
           value: {{ $.Values.operator.reconcileIntervalSeconds | quote }}
         - name: BACKUPS_AZURE_BLOB_CONTAINER_URL

@@ -66,7 +66,7 @@ async function reconcile(instanceName: string, namespace: string, firstPort: num
         if (obj.db)
         {
             let result = await sqlServerInstance.runSQL(`
-                EXEC master.dbo.CreateDB @DbName = @DbName, @Password = @Password, @FirstPort = @FirstPort, @LastPort = @LastPort
+                EXEC master.dbo.CreateDB @DbName = @DbName, @Password = @Password
             `, { DbName: `${obj.metadata.namespace}_${obj.metadata.name}`, Password: userPassword, FirstPort: firstPort, LastPort: lastPort });
 
             if (result)
@@ -102,7 +102,7 @@ async function reconcile(instanceName: string, namespace: string, firstPort: num
                 },
                 spec: {
                     type: 'ExternalName',
-                    externalName: `sqlserver-${instanceName}-${port}.${namespace}.svc.cluster.local`,
+                    externalName: `sqlserver-${instanceName}.${namespace}.svc.cluster.local`,
                     ports: [
                         {
                             port: 1433

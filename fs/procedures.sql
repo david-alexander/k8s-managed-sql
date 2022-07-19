@@ -9,9 +9,9 @@ GO
 
 CREATE PROCEDURE [dbo].[CreateDB]
 	@DbName SYSNAME,
-	@Password NVARCHAR(MAX),
-	@FirstPort INT,
-	@LastPort INT
+	@Password NVARCHAR(MAX)--,
+	-- @FirstPort INT,
+	-- @LastPort INT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -34,24 +34,24 @@ BEGIN
 		EXEC ('CREATE DATABASE ' + @DbNameQuoted + '')
 	END
 
-	DECLARE @AllPorts TABLE (port INT);
-	WITH Series(a) AS
-	(
-		SELECT @FirstPort
-		UNION ALL
-		SELECT a + 1 FROM Series WHERE a <= @LastPort
-	)
-	INSERT INTO @AllPorts
-	SELECT * FROM Series;
+	-- DECLARE @AllPorts TABLE (port INT);
+	-- WITH Series(a) AS
+	-- (
+	-- 	SELECT @FirstPort
+	-- 	UNION ALL
+	-- 	SELECT a + 1 FROM Series WHERE a <= @LastPort
+	-- )
+	-- INSERT INTO @AllPorts
+	-- SELECT * FROM Series;
 
-	IF NOT EXISTS (SELECT * FROM master.sys.tcp_endpoints WHERE name = @DbName)
-	BEGIN
-		DECLARE @Port INT = (SELECT TOP 1 port FROM @AllPorts WHERE port NOT IN (SELECT port FROM master.sys.tcp_endpoints));
-		EXEC ('CREATE ENDPOINT ' + @DbNameQuoted + ' AS TCP (LISTENER_PORT = ' + @Port + ') FOR TSQL ()')
-	END
+	-- IF NOT EXISTS (SELECT * FROM master.sys.tcp_endpoints WHERE name = @DbName)
+	-- BEGIN
+	-- 	DECLARE @Port INT = (SELECT TOP 1 port FROM @AllPorts WHERE port NOT IN (SELECT port FROM master.sys.tcp_endpoints));
+	-- 	EXEC ('CREATE ENDPOINT ' + @DbNameQuoted + ' AS TCP (LISTENER_PORT = ' + @Port + ') FOR TSQL ()')
+	-- END
 
-	EXEC ('ALTER ENDPOINT ' + @DbNameQuoted + ' STATE = STARTED');
-	EXEC ('GRANT CONNECT ON ENDPOINT::' + @DbNameQuoted + ' TO ' + @DbNameQuoted);
+	-- EXEC ('ALTER ENDPOINT ' + @DbNameQuoted + ' STATE = STARTED');
+	-- EXEC ('GRANT CONNECT ON ENDPOINT::' + @DbNameQuoted + ' TO ' + @DbNameQuoted);
 
 	EXEC ('USE ' + @DbNameQuoted + '; IF EXISTS (SELECT * FROM ' + @DbNameQuoted + '.sys.database_principals WHERE name = ' + @DbNameQuotedString + ' AND NOT (type = ''S'' AND authentication_type = 1)) BEGIN DROP USER ' + @DbNameQuoted + '; END')
 	EXEC ('USE ' + @DbNameQuoted + '; IF NOT EXISTS (SELECT * FROM ' + @DbNameQuoted + '.sys.database_principals WHERE name = ' + @DbNameQuotedString + ' AND (type = ''S'' AND authentication_type = 1)) BEGIN CREATE USER ' + @DbNameQuoted + ' FOR LOGIN ' + @DbNameQuoted + '; END')
@@ -88,10 +88,10 @@ BEGIN
 		EXEC ('DROP DATABASE ' + @DbNameQuoted + '')
 	END
 
-	IF EXISTS (SELECT * FROM master.sys.tcp_endpoints WHERE name = @DbName)
-	BEGIN
-		EXEC ('DROP ENDPOINT ' + @DbNameQuoted)
-	END
+	-- IF EXISTS (SELECT * FROM master.sys.tcp_endpoints WHERE name = @DbName)
+	-- BEGIN
+	-- 	EXEC ('DROP ENDPOINT ' + @DbNameQuoted)
+	-- END
 END
 GO
 

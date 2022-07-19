@@ -7,9 +7,6 @@ sqlServer:
     - name: nonproduction
       memory: 2Gi
       timezone: UTC
-      ports:
-        first: 1435
-        last: 1450
       storage:
         size: 500Gi
         class: default
