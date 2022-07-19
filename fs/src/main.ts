@@ -188,7 +188,7 @@ async function main()
     {
         try
         {
-            await reconcile(instanceName, namespace, firstPort, lastPort);
+            await reconcile(instanceName, namespace);
         }
         catch (e)
         {
