@@ -8,7 +8,7 @@ kc.loadFromDefault();
 const coreAPI = kc.makeApiClient(k8s.CoreV1Api);
 const customObjectsAPI = kc.makeApiClient(k8s.CustomObjectsApi);
 
-async function reconcile(instanceName: string, namespace: string, firstPort: number, lastPort: number)
+async function reconcile(instanceName: string, namespace: string)
 {
     // TODO: Automatically generate a unique password for each database.
     let userPassword = process.env.SA_PASSWORD as string;
@@ -67,7 +67,7 @@ async function reconcile(instanceName: string, namespace: string, firstPort: num
         {
             let result = await sqlServerInstance.runSQL(`
                 EXEC master.dbo.CreateDB @DbName = @DbName, @Password = @Password
-            `, { DbName: `${obj.metadata.namespace}_${obj.metadata.name}`, Password: userPassword, FirstPort: firstPort, LastPort: lastPort });
+            `, { DbName: `${obj.metadata.namespace}_${obj.metadata.name}`, Password: userPassword });
 
             if (result)
             {
@@ -151,8 +151,6 @@ async function main()
     let instanceName = process.env.INSTANCE_NAME as string;
     let namespace = process.env.NAMESPACE as string;
     let password = process.env.SA_PASSWORD as string;
-    let firstPort = parseInt(process.env.FIRST_PORT as string);
-    let lastPort = parseInt(process.env.LAST_PORT as string);
     let reconcileIntervalSeconds = parseInt(process.env.RECONCILE_INTERVAL_SECONDS as string);
     let backupsAzureBlobContainerUrl = process.env.BACKUPS_AZURE_BLOB_CONTAINER_URL as string;
     let backupsAzureBlobContainerSas = process.env.BACKUPS_AZURE_BLOB_CONTAINER_SAS as string;
