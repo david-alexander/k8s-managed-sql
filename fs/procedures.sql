@@ -59,7 +59,7 @@ BEGIN
 	EXEC ('USE ' + @DbNameQuoted + '; ALTER USER ' + @DbNameQuoted + ' WITH LOGIN = ' + @DbNameQuoted)
 	EXEC ('USE ' + @DbNameQuoted + '; ALTER ROLE [db_owner] ADD MEMBER ' + @DbNameQuoted)
 
-	SELECT port FROM master.sys.tcp_endpoints WHERE name = @DbName
+	-- SELECT port FROM master.sys.tcp_endpoints WHERE name = @DbName
 END
 GO
 

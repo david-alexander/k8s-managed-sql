@@ -61,18 +61,11 @@ async function reconcile(instanceName: string, namespace: string)
 
     for (let obj of Object.values(objs))
     {
-        let port = 0;
-
         if (obj.db)
         {
-            let result = await sqlServerInstance.runSQL(`
+            await sqlServerInstance.runSQL(`
                 EXEC master.dbo.CreateDB @DbName = @DbName, @Password = @Password
             `, { DbName: `${obj.metadata.namespace}_${obj.metadata.name}`, Password: userPassword });
-
-            if (result)
-            {
-                port = result[0][0].value;
-            }
         }
 
         if (obj.db && obj.service)
@@ -83,7 +76,7 @@ async function reconcile(instanceName: string, namespace: string)
         {
             await coreAPI.deleteNamespacedService(obj.metadata.name, obj.metadata.namespace);
         }
-        else if (obj.db && !obj.service && port)
+        else if (obj.db && !obj.service)
         {
             await coreAPI.createNamespacedService(obj.metadata.namespace, {
                 metadata: {
@@ -141,8 +134,6 @@ async function reconcile(instanceName: string, namespace: string)
         {
             await coreAPI.replaceNamespacedSecret(obj.metadata.name, obj.metadata.namespace, secret);
         }
-
-        port++;
     }
 }
 
